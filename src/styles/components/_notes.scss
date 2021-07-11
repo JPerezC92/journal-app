@@ -13,3 +13,38 @@
   padding-block: 10px;
   padding-inline: 20px;
 }
+
+.notes__content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 20px;
+}
+
+.notes__title-input,
+.notes__textarea {
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.notes__title-input {
+  color: $dark-grey;
+  font-size: 25px;
+  font-weight: 700;
+  margin-block-end: 10px;
+}
+
+.notes__textarea {
+  color: $dark-grey;
+  font-size: 20px;
+  flex: 1 1 auto;
+  resize: none;
+}
+
+.notes__image img {
+  box-shadow: 5px 5px $dark-grey;
+  width: 150px;
+}

@@ -9,7 +9,7 @@ const Sidebar = () => {
           <span> Philip</span>
         </h3>
 
-        <button className="btn btn-primary">Logout</button>
+        <button className="btn">Logout</button>
       </div>
       <div className="journal__new-entry">
         <i className="far fa-calendar-plus fa-5x"></i>
