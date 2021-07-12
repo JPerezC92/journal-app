@@ -1,23 +1,41 @@
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import useForm from "../../hooks/useForm/useForm";
+import { login } from "../../reducers/authReducer";
 
 const LoginScreen = () => {
+  const dispatch = useDispatch();
+
+  const { formValues, handleInputChange } = useForm({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    dispatch(login({ isLoggedIn: true, displayName: "dex", uuid: "erwerew" }));
+  };
+
   return (
     <>
       <h3 className="auth__title">Login</h3>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           className="auth__input"
           type="email"
           placeholder="Email"
           name="email"
           autoComplete="off"
+          onChange={handleInputChange}
         />
+
         <input
           className="auth__input"
           type="password"
           placeholder="Password"
           name="password"
+          onChange={handleInputChange}
         />
 
         <button className="btn btn-primary btn-block" type="submit">
@@ -45,6 +63,8 @@ const LoginScreen = () => {
         <Link className="link" to="/auth/register">
           Create a new account
         </Link>
+
+        <pre>{JSON.stringify(formValues, null, 2)}</pre>
       </form>
     </>
   );
