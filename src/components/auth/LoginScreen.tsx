@@ -1,9 +1,13 @@
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import useForm from "../../hooks/useForm/useForm";
-import { login } from "../../reducers/authReducer";
+import { RootState } from "../../store/store";
+import { Loading, login } from "../../reducers/authReducer";
+import { LoginService } from "../../services/LoginService";
 
 const LoginScreen = () => {
+  const auth = useSelector((state: RootState) => state.authReducer);
+
   const dispatch = useDispatch();
 
   const { formValues, handleInputChange } = useForm({
@@ -13,8 +17,14 @@ const LoginScreen = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch(login({ isLoggedIn: true, displayName: "dex", uuid: "erwerew" }));
+    dispatch(login(() => LoginService.withEmailAndPassword(formValues)));
   };
+
+  const handleGoogleLogin = () => {
+    dispatch(login(LoginService.withFirebase));
+  };
+
+  if (auth.loading === Loading.PENDING) return <div>Loading...</div>;
 
   return (
     <>
@@ -46,7 +56,7 @@ const LoginScreen = () => {
         <div className="auth__social-networks">
           <p>Login with social networks</p>
 
-          <div className="google-btn">
+          <div className="google-btn" onClick={handleGoogleLogin}>
             <div className="google-icon-wrapper">
               <img
                 className="google-icon"
@@ -65,6 +75,8 @@ const LoginScreen = () => {
         </Link>
 
         <pre>{JSON.stringify(formValues, null, 2)}</pre>
+
+        <span>{JSON.stringify(auth.user, null, 2)}</span>
       </form>
     </>
   );
