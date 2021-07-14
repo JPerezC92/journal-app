@@ -5,7 +5,7 @@ export enum Loading {
 
 export interface User {
   isLoggedIn: boolean;
-  displayName: string;
+  displayName: string | null;
   uid: string;
 }
 
@@ -24,4 +24,5 @@ export interface LoginResponse {
 export enum AuthThunkTypes {
   LOGIN = "LOGIN",
   LOGOUT = "LOGOUT",
+  REGISTER = "REGISTER",
 }

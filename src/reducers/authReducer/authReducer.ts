@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { AuthState, Loading } from "./authReducerTypes";
-import { login } from "./authThunks";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AuthState, Loading, User } from "./authReducerTypes";
+import { startLogin, register } from "./authThunks";
 
 const initialState = {
   user: { isLoggedIn: false },
@@ -13,26 +13,30 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    login: (state, action: PayloadAction<Omit<User, "isLoggedIn">>) => {
+      const { displayName, uid } = action.payload;
+
+      state.user = {
+        isLoggedIn: true,
+        displayName,
+        uid,
+      };
+    },
     logout: () => initialState,
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state, action) => {
+      .addCase(startLogin.pending, (state, action) => {
         if (state.loading === Loading.IDLE) {
-          state.loading = Loading.PENDING;
+          // state.loading = Loading.PENDING;
           state.currentRequestId = action.meta.requestId;
         }
       })
-      .addCase(login.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        state.loading = Loading.IDLE;
-      });
-    // .addCase(startGoogleLogin.fulfilled, (state, action) => {
-    //   state.user = action.payload.user;
-    // });
+      .addCase(startLogin.fulfilled, () => {})
+      .addCase(register.fulfilled, (state, action) => {});
   },
 });
 
-export const { logout } = authSlice.actions;
+export const authActions = authSlice.actions;
 
-export default authSlice.reducer;
+export const authReducer = authSlice.reducer;

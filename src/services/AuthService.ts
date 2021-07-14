@@ -11,30 +11,23 @@ export interface LoginArgs {
   credentials?: { email: string; password: string };
 }
 
-export class LoginService {
-  static async withEmailAndPassword({
-    email,
-    password,
-  }: {
-    email: string;
-    password: string;
-  }): Promise<User> {
-    const pro = () => {
-      return new Promise<User>((resolve, reject) => {
-        setTimeout(() => {
-          return resolve({
-            isLoggedIn: true,
-            displayName: "Philip",
-            uid: "dasdasds",
-          });
-        }, 3500);
-      });
-    };
+export class AuthService {
+  static async loginWithEmailAndPassword(
+    email: string,
+    password: string
+  ): Promise<User> {
+    const { user } = await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password);
 
-    return pro();
+    return {
+      isLoggedIn: true,
+      displayName: user?.displayName! || "",
+      uid: user?.uid!,
+    };
   }
 
-  static async withFirebase(): Promise<User> {
+  static async loginWithFirebase(): Promise<User> {
     const userCred = await firebase.auth().signInWithPopup(googleAuthProvider);
 
     const { displayName, uid } = userCred.user!;

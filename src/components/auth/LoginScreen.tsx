@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import useForm from "../../hooks/useForm/useForm";
 import { RootState } from "../../store/store";
-import { Loading, login } from "../../reducers/authReducer";
-import { LoginService } from "../../services/LoginService";
+import { Loading, startLogin } from "../../reducers/authReducer";
+import { AuthService } from "../../services/AuthService";
 
 const LoginScreen = () => {
   const auth = useSelector((state: RootState) => state.authReducer);
@@ -15,13 +15,17 @@ const LoginScreen = () => {
     password: "",
   });
 
+  const { email, password } = formValues;
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch(login(() => LoginService.withEmailAndPassword(formValues)));
+    dispatch(
+      startLogin(() => AuthService.loginWithEmailAndPassword(email, password))
+    );
   };
 
   const handleGoogleLogin = () => {
-    dispatch(login(LoginService.withFirebase));
+    dispatch(startLogin(AuthService.loginWithFirebase));
   };
 
   if (auth.loading === Loading.PENDING) return <div>Loading...</div>;
@@ -38,6 +42,7 @@ const LoginScreen = () => {
           name="email"
           autoComplete="off"
           onChange={handleInputChange}
+          value={email}
         />
 
         <input
@@ -46,6 +51,7 @@ const LoginScreen = () => {
           placeholder="Password"
           name="password"
           onChange={handleInputChange}
+          value={password}
         />
 
         <button className="btn btn-primary btn-block" type="submit">
