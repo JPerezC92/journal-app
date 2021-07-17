@@ -1,8 +1,3 @@
-export enum Loading {
-  IDLE = "IDLE",
-  PENDING = "PENDING",
-}
-
 export interface User {
   isLoggedIn: boolean;
   displayName: string | null;
@@ -11,14 +6,8 @@ export interface User {
 
 export interface AuthState {
   user: User;
-  loading: Loading;
   currentRequestId: string | undefined;
   error: string | null;
-}
-
-export interface LoginResponse {
-  user: User;
-  sucess: boolean;
 }
 
 export enum AuthThunkTypes {

@@ -2,11 +2,15 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import useForm from "../../hooks/useForm/useForm";
 import { RootState } from "../../store/store";
-import { Loading, startLogin } from "../../reducers/authReducer";
-import { AuthService } from "../../services/AuthService";
+import { startLogin } from "../../reducers/authReducer";
+import { AuthService } from "../../services";
 
 const LoginScreen = () => {
-  const auth = useSelector((state: RootState) => state.authReducer);
+  const { authReducer: auth, uiReducer: ui } = useSelector(
+    (state: RootState) => state
+  );
+
+  let errorMessage = null;
 
   const dispatch = useDispatch();
 
@@ -19,6 +23,7 @@ const LoginScreen = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     dispatch(
       startLogin(() => AuthService.loginWithEmailAndPassword(email, password))
     );
@@ -28,11 +33,13 @@ const LoginScreen = () => {
     dispatch(startLogin(AuthService.loginWithFirebase));
   };
 
-  if (auth.loading === Loading.PENDING) return <div>Loading...</div>;
+  if (ui.loading) return <div>Loading...</div>;
 
   return (
     <>
       <h3 className="auth__title">Login</h3>
+
+      {errorMessage && <div>{errorMessage}</div>}
 
       <form onSubmit={handleSubmit}>
         <input

@@ -1,13 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import validator from "validator";
 import useForm from "../../hooks/useForm/useForm";
 import { uiActions } from "../../reducers";
 import { register } from "../../reducers/authReducer";
+import { ValidatorService } from "../../services";
 
 import { RootState } from "../../store/store";
 
 const RegisterScreen = () => {
+  const validationService = new ValidatorService();
   const { errorMessage } = useSelector((state: RootState) => state.uiReducer);
 
   const dispatch = useDispatch();
@@ -22,34 +23,14 @@ const RegisterScreen = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { success, errorMessage } =
+      validationService.validateRegisterForm(formValues);
 
-    if (isFormValid()) {
+    if (success) {
       dispatch(register(formValues));
-      console.log("formulario correcto");
+    } else {
+      dispatch(uiActions.setError(errorMessage));
     }
-    console.log(formValues);
-  };
-
-  const isFormValid = () => {
-    if (name.trim().length === 0) {
-      dispatch(uiActions.setError("name is required"));
-
-      return false;
-    } else if (!validator.isEmail(email)) {
-      dispatch(uiActions.setError("email invalid"));
-
-      return false;
-    } else if (password !== confirmPassword || password.length < 5) {
-      dispatch(
-        uiActions.setError(
-          "password should be at least 5 characters and match each other"
-        )
-      );
-      return false;
-    }
-
-    dispatch(uiActions.removeError());
-    return true;
   };
 
   return (

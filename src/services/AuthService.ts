@@ -1,16 +1,6 @@
 import { firebase, googleAuthProvider } from "../firebase/firebase-config";
 import { User } from "../reducers/authReducer";
 
-export enum Login {
-  WITH_EMAIL_AND_PASSWORD = "WITH_EMAIL_AND_PASSWORD",
-  WITH_FIREBASE = "WITH_FIREBASE",
-}
-
-export interface LoginArgs {
-  type: Login;
-  credentials?: { email: string; password: string };
-}
-
 export class AuthService {
   static async loginWithEmailAndPassword(
     email: string,
@@ -22,7 +12,7 @@ export class AuthService {
 
     return {
       isLoggedIn: true,
-      displayName: user?.displayName! || "",
+      displayName: user!.displayName!,
       uid: user?.uid!,
     };
   }

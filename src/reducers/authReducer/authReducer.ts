@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AuthState, Loading, User } from "./authReducerTypes";
+import { AuthState, User } from "./authReducerTypes";
 import { startLogin, register } from "./authThunks";
 
 const initialState = {
   user: { isLoggedIn: false },
-  loading: Loading.IDLE,
   currentRequestId: undefined,
   error: null,
 } as AuthState;
@@ -27,10 +26,7 @@ export const authSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(startLogin.pending, (state, action) => {
-        if (state.loading === Loading.IDLE) {
-          // state.loading = Loading.PENDING;
-          state.currentRequestId = action.meta.requestId;
-        }
+        state.currentRequestId = action.meta.requestId;
       })
       .addCase(startLogin.fulfilled, () => {})
       .addCase(register.fulfilled, (state, action) => {});
