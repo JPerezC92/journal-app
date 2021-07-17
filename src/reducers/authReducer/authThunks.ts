@@ -1,14 +1,17 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { firebase } from "../../firebase/firebase-config";
+import { uiActions } from "../uiReducer";
 import { authActions } from "./authReducer";
 import { AuthThunkTypes, User } from "./authReducerTypes";
 
 export const startLogin = createAsyncThunk<void, () => Promise<User>>(
   AuthThunkTypes.LOGIN,
   async (loginCallback, { dispatch }) => {
+    dispatch(uiActions.uiStartLoading());
     const user = await loginCallback();
 
     dispatch(authActions.login(user));
+    dispatch(uiActions.uiFinishLoading());
   }
 );
 
@@ -20,6 +23,7 @@ export const register = createAsyncThunk<
     name: string;
   }
 >(AuthThunkTypes.REGISTER, async (args, { dispatch }) => {
+  dispatch(uiActions.uiStartLoading());
   const { email, password, name } = args;
 
   firebase
@@ -30,8 +34,10 @@ export const register = createAsyncThunk<
       const { displayName, uid } = user!;
 
       dispatch(authActions.login({ displayName, uid }));
+      dispatch(uiActions.uiFinishLoading());
     })
     .catch((e) => {
       console.log(e);
+      dispatch(uiActions.uiFinishLoading());
     });
 });

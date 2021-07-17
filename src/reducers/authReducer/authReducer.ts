@@ -9,7 +9,7 @@ const initialState = {
 } as AuthState;
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: "[AUTH]",
   initialState,
   reducers: {
     login: (state, action: PayloadAction<Omit<User, "isLoggedIn">>) => {

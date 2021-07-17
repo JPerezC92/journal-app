@@ -10,6 +10,7 @@ import { RootState } from "../../store/store";
 const RegisterScreen = () => {
   const validationService = new ValidatorService();
   const { errorMessage } = useSelector((state: RootState) => state.uiReducer);
+  const ui = useSelector((state: RootState) => state.uiReducer);
 
   const dispatch = useDispatch();
 
@@ -78,7 +79,11 @@ const RegisterScreen = () => {
           value={confirmPassword}
         />
 
-        <button className="btn btn-primary btn-block mb-5" type="submit">
+        <button
+          className="btn btn-primary btn-block mb-5"
+          type="submit"
+          disabled={ui.loading}
+        >
           Register
         </button>
 

@@ -23,6 +23,7 @@
 
   &[disabled] {
     background-color: lighten($color: $primary, $amount: 15);
+    pointer-events: none;
   }
 
   &:hover {

@@ -6,9 +6,7 @@ import { startLogin } from "../../reducers/authReducer";
 import { AuthService } from "../../services";
 
 const LoginScreen = () => {
-  const { authReducer: auth, uiReducer: ui } = useSelector(
-    (state: RootState) => state
-  );
+  const { uiReducer: ui } = useSelector((state: RootState) => state);
 
   let errorMessage = null;
 
@@ -32,8 +30,6 @@ const LoginScreen = () => {
   const handleGoogleLogin = () => {
     dispatch(startLogin(AuthService.loginWithFirebase));
   };
-
-  if (ui.loading) return <div>Loading...</div>;
 
   return (
     <>
@@ -61,7 +57,11 @@ const LoginScreen = () => {
           value={password}
         />
 
-        <button className="btn btn-primary btn-block" type="submit">
+        <button
+          className="btn btn-primary btn-block"
+          type="submit"
+          disabled={ui.loading}
+        >
           Login
         </button>
 
@@ -86,10 +86,6 @@ const LoginScreen = () => {
         <Link className="link" to="/auth/register">
           Create a new account
         </Link>
-
-        <pre>{JSON.stringify(formValues, null, 2)}</pre>
-
-        <span>{JSON.stringify(auth.user, null, 2)}</span>
       </form>
     </>
   );
