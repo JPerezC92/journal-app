@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { firebase } from "../../firebase/firebase-config";
+import { firebase } from "../../firebase";
 import { uiActions } from "../uiReducer";
 import { authActions } from "./authReducer";
 import { AuthThunkTypes, User } from "./authReducerTypes";

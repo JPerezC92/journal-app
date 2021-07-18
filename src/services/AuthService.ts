@@ -1,4 +1,4 @@
-import { firebase, googleAuthProvider } from "../firebase/firebase-config";
+import { firebase, googleAuthProvider } from "../firebase";
 import { User } from "../reducers/authReducer";
 
 export class AuthService {
