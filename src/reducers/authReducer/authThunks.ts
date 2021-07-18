@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import Swal from "sweetalert2";
 import { firebase } from "../../firebase";
 import { uiActions } from "../uiReducer";
 import { authActions } from "./authReducer";
@@ -16,6 +17,7 @@ export const startLogin = createAsyncThunk<void, () => Promise<User>>(
     } catch (error) {
       console.log(error);
       dispatch(uiActions.uiFinishLoading());
+      Swal.fire("Error", error.message, "error");
     }
   }
 );
@@ -50,8 +52,9 @@ export const register = createAsyncThunk<
       dispatch(authActions.login({ displayName, uid }));
       dispatch(uiActions.uiFinishLoading());
     })
-    .catch((e) => {
-      console.log(e);
+    .catch((error) => {
+      console.log(error);
       dispatch(uiActions.uiFinishLoading());
+      Swal.fire("Error", error.message, "error");
     });
 });
