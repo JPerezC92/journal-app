@@ -7,11 +7,25 @@ import { AuthThunkTypes, User } from "./authReducerTypes";
 export const startLogin = createAsyncThunk<void, () => Promise<User>>(
   AuthThunkTypes.LOGIN,
   async (loginCallback, { dispatch }) => {
-    dispatch(uiActions.uiStartLoading());
-    const user = await loginCallback();
+    try {
+      dispatch(uiActions.uiStartLoading());
+      const user = await loginCallback();
 
-    dispatch(authActions.login(user));
-    dispatch(uiActions.uiFinishLoading());
+      dispatch(authActions.login(user));
+      dispatch(uiActions.uiFinishLoading());
+    } catch (error) {
+      console.log(error);
+      dispatch(uiActions.uiFinishLoading());
+    }
+  }
+);
+
+export const startLogout = createAsyncThunk(
+  AuthThunkTypes.LOGOUT,
+  async (_, { dispatch }) => {
+    await firebase.auth().signOut();
+
+    dispatch(authActions.logout());
   }
 );
 

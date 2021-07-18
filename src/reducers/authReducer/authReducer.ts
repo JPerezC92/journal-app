@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthState, User } from "./authReducerTypes";
-import { startLogin, register } from "./authThunks";
+import { startLogin, register, startLogout } from "./authThunks";
 
 const initialState = {
   user: { isLoggedIn: false },
@@ -21,7 +21,7 @@ export const authSlice = createSlice({
         uid,
       };
     },
-    logout: () => initialState,
+    logout: (state) => (state = initialState),
   },
   extraReducers: (builder) => {
     builder
@@ -29,7 +29,8 @@ export const authSlice = createSlice({
         state.currentRequestId = action.meta.requestId;
       })
       .addCase(startLogin.fulfilled, () => {})
-      .addCase(register.fulfilled, (state, action) => {});
+      .addCase(startLogout.fulfilled, () => {})
+      .addCase(register.fulfilled, () => {});
   },
 });
 
