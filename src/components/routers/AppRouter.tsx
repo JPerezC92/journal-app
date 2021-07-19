@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Redirect, Switch } from "react-router-dom";
 import { firebase } from "../../firebase";
-import { authActions } from "../../reducers";
+import { authActions, notesActions } from "../../reducers";
+import { NotesService } from "../../services";
 import { RootState } from "../../store/store";
 import JournalScreen from "../journal/JournalScreen";
 import AuthRouter from "./AuthRouter";
@@ -16,11 +17,13 @@ const AppRouter = () => {
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user?.uid) {
         dispatch(
           authActions.login({ uid: user.uid, displayName: user.displayName })
         );
+        const notes = await NotesService.getAll(user.uid);
+        dispatch(notesActions.setNotes(notes));
       }
       setChecking(() => false);
     });
