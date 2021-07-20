@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BrowserRouter, Redirect, Switch } from "react-router-dom";
 import { firebase } from "../../firebase";
-import { authActions, notesActions } from "../../reducers";
-import { NotesService } from "../../services";
+import { authActions, startLoadingNotes } from "../../reducers";
 import { RootState } from "../../store/store";
 import JournalScreen from "../journal/JournalScreen";
 import AuthRouter from "./AuthRouter";
@@ -22,8 +21,8 @@ const AppRouter = () => {
         dispatch(
           authActions.login({ uid: user.uid, displayName: user.displayName })
         );
-        const notes = await NotesService.getAll(user.uid);
-        dispatch(notesActions.setNotes(notes));
+
+        dispatch(startLoadingNotes(user.uid));
       }
       setChecking(() => false);
     });

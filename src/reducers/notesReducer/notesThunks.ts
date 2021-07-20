@@ -1,10 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../../firebase";
+import { NotesService } from "../../services";
 import { RootState } from "../../store/store";
 import { Note, notesActions } from "./notesReducer";
 
 enum NotesThunks {
   START_NEW_NOTE = "START_NEW_NOTE",
+  START_LOADING_NOTES = "START_LOADING_NOTES",
 }
 
 export const startNewNote = createAsyncThunk(
@@ -22,5 +24,13 @@ export const startNewNote = createAsyncThunk(
     const docRef = await db.collection(`${uid}/journal/notes`).add(newNote);
 
     dispatch(notesActions.setNoteActive({ id: docRef.id, note: newNote }));
+  }
+);
+
+export const startLoadingNotes = createAsyncThunk<void, string>(
+  NotesThunks.START_LOADING_NOTES,
+  async (uid, { dispatch }) => {
+    const notes = await NotesService.getAll(uid);
+    dispatch(notesActions.setNotes(notes));
   }
 );
