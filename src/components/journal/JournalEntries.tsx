@@ -1,12 +1,14 @@
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 import JournalEntry from "./JournalEntry";
 
 const JournalEntries = () => {
-  const entries = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const { notes } = useSelector((state: RootState) => state.notesReducer);
 
   return (
     <div className="journal__entries">
-      {entries.map((entry) => (
-        <JournalEntry key={entry} />
+      {notes.map((note) => (
+        <JournalEntry key={note.id} note={note} />
       ))}
     </div>
   );

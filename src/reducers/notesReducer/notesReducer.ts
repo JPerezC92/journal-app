@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Note {
-  id: string | null;
-  title: string | null;
-  body: string | null;
+  id: string;
+  title: string;
+  body: string;
   imageUrl: string | null;
   date: number;
 }
@@ -19,11 +19,8 @@ const notesSlice = createSlice({
   initialState,
   reducers: {
     notesAddNew: (params) => {},
-    setNoteActive: (
-      state,
-      action: PayloadAction<{ id: string; note: Note }>
-    ) => {
-      state.active = action.payload.note;
+    setNoteActive: (state, action: PayloadAction<Partial<Note>>) => {
+      state.active = { ...state.active!, ...action.payload };
     },
     setNotes: (state, action: PayloadAction<Note[]>) => {
       state.notes = action.payload;

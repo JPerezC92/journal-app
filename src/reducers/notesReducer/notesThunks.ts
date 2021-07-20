@@ -13,8 +13,7 @@ export const startNewNote = createAsyncThunk(
   NotesThunks.START_NEW_NOTE,
   async (_, { dispatch, getState }) => {
     const { uid } = (getState() as RootState).authReducer.user;
-    const newNote: Note = {
-      id: null,
+    const newNote: Omit<Note, "id"> = {
       title: "",
       body: "",
       date: new Date().getTime(),
@@ -22,8 +21,9 @@ export const startNewNote = createAsyncThunk(
     };
 
     const docRef = await db.collection(`${uid}/journal/notes`).add(newNote);
+    docRef.update({ id: docRef.id });
 
-    dispatch(notesActions.setNoteActive({ id: docRef.id, note: newNote }));
+    dispatch(notesActions.setNoteActive({ ...newNote, id: docRef.id }));
   }
 );
 
