@@ -40,7 +40,10 @@ const RegisterScreen = () => {
 
       {errorMessage && <div className="auth__alert-error">{errorMessage}</div>}
 
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={handleSubmit}
+        className="animate__animated animate__fadeIn animate__faster"
+      >
         <input
           className="auth__input"
           type="name"
