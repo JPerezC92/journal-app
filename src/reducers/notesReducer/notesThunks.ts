@@ -29,6 +29,7 @@ export const startNewNote = createAsyncThunk(
     docRef.update({ id: docRef.id });
 
     dispatch(notesActions.setNoteActive({ ...newNote, id: docRef.id }));
+    dispatch(notesActions.addNewNote({ ...newNote, id: docRef.id }));
   }
 );
 
