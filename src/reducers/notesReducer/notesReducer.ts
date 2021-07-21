@@ -15,7 +15,7 @@ interface NotesState {
 const initialState: NotesState = { notes: [], active: null };
 
 const notesSlice = createSlice({
-  name: "[NOTES]",
+  name: "[Notes]",
   initialState,
   reducers: {
     addNewNote: (state, { payload }: PayloadAction<Note>) => {

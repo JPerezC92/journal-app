@@ -1,6 +1,17 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AuthState, User } from "./authReducerTypes";
-import { startLogin, register, startLogout } from "./authThunks";
+import { startLogin } from "./authThunks";
+
+export interface User {
+  isLoggedIn: boolean;
+  displayName: string | null;
+  uid: string;
+}
+
+export interface AuthState {
+  user: User;
+  currentRequestId: string | undefined;
+  error: string | null;
+}
 
 const initialState = {
   user: { isLoggedIn: false },
@@ -24,13 +35,9 @@ export const authSlice = createSlice({
     logout: (state) => (state = initialState),
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(startLogin.pending, (state, action) => {
-        state.currentRequestId = action.meta.requestId;
-      })
-      .addCase(startLogin.fulfilled, () => {})
-      .addCase(startLogout.fulfilled, () => {})
-      .addCase(register.fulfilled, () => {});
+    builder.addCase(startLogin.pending, (state, action) => {
+      state.currentRequestId = action.meta.requestId;
+    });
   },
 });
 

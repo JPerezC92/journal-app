@@ -1,21 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Swal from "sweetalert2";
 import { db } from "../../firebase";
-import { NotesService } from "../../services";
-import { UploadService } from "../../services/UploadService";
+import { NotesService, UploadService } from "../../services";
 import { RootState } from "../../store/store";
+import { Types } from "../../types/types";
 import { Note, notesActions } from "./notesReducer";
 
-enum NotesThunks {
-  START_NEW_NOTE = "START_NEW_NOTE",
-  START_LOADING_NOTES = "START_LOADING_NOTES",
-  START_SAVE_NOTE = "START_SAVE_NOTE",
-  START_UPLOADING_IMG = "START_UPLOADING_IMG",
-  START_DELETE_NOTE = "START_DELETE_NOTE",
-}
-
 export const startNewNote = createAsyncThunk(
-  NotesThunks.START_NEW_NOTE,
+  Types.NOTES_START_NEW_NOTE,
   async (_, { dispatch, getState }) => {
     const { uid } = (getState() as RootState).authReducer.user;
     const newNote: Omit<Note, "id"> = {
@@ -34,7 +26,7 @@ export const startNewNote = createAsyncThunk(
 );
 
 export const startLoadingNotes = createAsyncThunk<void, string>(
-  NotesThunks.START_LOADING_NOTES,
+  Types.NOTES_START_LOADING_NOTES,
   async (uid, { dispatch }) => {
     const notes = await NotesService.getAll(uid);
     dispatch(notesActions.setNotes(notes));
@@ -42,7 +34,7 @@ export const startLoadingNotes = createAsyncThunk<void, string>(
 );
 
 export const startSaveNote = createAsyncThunk<void, Note>(
-  NotesThunks.START_SAVE_NOTE,
+  Types.NOTES_START_SAVE_NOTE,
   async (note, { dispatch, getState }) => {
     const { user } = (getState() as RootState).authReducer;
 
@@ -54,7 +46,7 @@ export const startSaveNote = createAsyncThunk<void, Note>(
 );
 
 export const startUploadingImg = createAsyncThunk<void, File>(
-  NotesThunks.START_UPLOADING_IMG,
+  Types.NOTES_START_UPLOADING_IMG,
   async (file, { dispatch, getState }) => {
     const note = (getState() as RootState).notesReducer.active!;
 
@@ -75,7 +67,7 @@ export const startUploadingImg = createAsyncThunk<void, File>(
 );
 
 export const startDeleteNote = createAsyncThunk<void, string>(
-  NotesThunks.START_DELETE_NOTE,
+  Types.NOTES_START_DELETE_NOTE,
   async (noteId, { dispatch, getState }) => {
     const { user } = (getState() as RootState).authReducer;
 
