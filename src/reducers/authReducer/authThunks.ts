@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Swal from "sweetalert2";
 import { firebase } from "../../firebase";
+import { notesActions } from "../notesReducer";
 import { uiActions } from "../uiReducer";
 import { authActions } from "./authReducer";
 import { AuthThunkTypes, User } from "./authReducerTypes";
@@ -28,6 +29,7 @@ export const startLogout = createAsyncThunk(
     await firebase.auth().signOut();
 
     dispatch(authActions.logout());
+    dispatch(notesActions.notesLogoutCleaning());
   }
 );
 
