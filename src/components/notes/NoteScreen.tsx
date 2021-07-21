@@ -57,13 +57,14 @@ const NoteScreen = () => {
 
         {note?.imageUrl && (
           <div className="notes__image">
-            <img
-              src="https://image.freepik.com/vector-gratis/fondo-pantalla-patron-dinamico-abstracto_53876-62605.jpg"
-              alt="imagen"
-            />
+            <img src={note.imageUrl} alt="imagen" />
           </div>
         )}
       </div>
+
+      <button className="btn btn-danger" type="button">
+        Delete
+      </button>
     </div>
   );
 };

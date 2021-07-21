@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import Swal from "sweetalert2";
 import { db } from "../../firebase";
 import { NotesService } from "../../services";
+import { UploadService } from "../../services/UploadService";
 import { RootState } from "../../store/store";
 import { Note, notesActions } from "./notesReducer";
 
@@ -9,6 +10,7 @@ enum NotesThunks {
   START_NEW_NOTE = "START_NEW_NOTE",
   START_LOADING_NOTES = "START_LOADING_NOTES",
   START_SAVE_NOTE = "START_SAVE_NOTE",
+  START_UPLOADING_IMG = "START_UPLOADING_IMG",
 }
 
 export const startNewNote = createAsyncThunk(
@@ -46,5 +48,26 @@ export const startSaveNote = createAsyncThunk<void, Note>(
 
     dispatch(notesActions.refreshNote(note));
     Swal.fire("Saved", note.title, "success");
+  }
+);
+
+export const startUploadingImg = createAsyncThunk<void, File>(
+  NotesThunks.START_UPLOADING_IMG,
+  async (file, { dispatch, getState }) => {
+    const note = (getState() as RootState).notesReducer.active!;
+
+    Swal.fire({
+      title: "uploading...",
+      text: "Please wait...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    const fileUrl = await UploadService.image(file);
+
+    Swal.close();
+    if (fileUrl) dispatch(startSaveNote({ ...note, imageUrl: fileUrl }));
   }
 );
