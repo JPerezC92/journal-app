@@ -18,7 +18,6 @@ const notesSlice = createSlice({
   name: "[NOTES]",
   initialState,
   reducers: {
-    notesAddNew: (params) => {},
     setNoteActive: (state, action: PayloadAction<Partial<Note>>) => {
       state.active = { ...state.active!, ...action.payload };
     },
@@ -30,9 +29,15 @@ const notesSlice = createSlice({
         note.id === payload.id ? payload : note
       );
     },
-    notesFileUrl: (params) => {},
-    notesDelete: (params) => {},
-    notesLogoutCleaning: (params) => {},
+
+    deleteNote: (state, { payload }: PayloadAction<string>) => {
+      state.notes = state.notes.filter((note) => note.id !== payload);
+      state.active = null;
+    },
+    notesLogoutCleaning: (state) => {
+      state.notes = [];
+      state.active = null;
+    },
   },
 });
 

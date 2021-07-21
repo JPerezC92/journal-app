@@ -15,7 +15,11 @@ export class NotesService {
     return notes;
   }
 
-  static async update(uid: string, note: Note): Promise<void> {
+  static async update(uid: string, note: Note) {
     await db.doc(`${uid}/journal/notes/${note.id}`).update(note);
+  }
+
+  static async delete(uid: string, noteId: string) {
+    await db.doc(`${uid}/journal/notes/${noteId}`).delete();
   }
 }

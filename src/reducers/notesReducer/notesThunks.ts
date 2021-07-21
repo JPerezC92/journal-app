@@ -11,6 +11,7 @@ enum NotesThunks {
   START_LOADING_NOTES = "START_LOADING_NOTES",
   START_SAVE_NOTE = "START_SAVE_NOTE",
   START_UPLOADING_IMG = "START_UPLOADING_IMG",
+  START_DELETE_NOTE = "START_DELETE_NOTE",
 }
 
 export const startNewNote = createAsyncThunk(
@@ -69,5 +70,16 @@ export const startUploadingImg = createAsyncThunk<void, File>(
 
     Swal.close();
     if (fileUrl) dispatch(startSaveNote({ ...note, imageUrl: fileUrl }));
+  }
+);
+
+export const startDeleteNote = createAsyncThunk<void, string>(
+  NotesThunks.START_DELETE_NOTE,
+  async (noteId, { dispatch, getState }) => {
+    const { user } = (getState() as RootState).authReducer;
+
+    await NotesService.delete(user.uid, noteId);
+
+    dispatch(notesActions.deleteNote(noteId));
   }
 );

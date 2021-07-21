@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useForm from "../../hooks/useForm/useForm";
-import { notesActions } from "../../reducers";
+import { notesActions, startDeleteNote } from "../../reducers";
 import { RootState } from "../../store/store";
 import NotesAppBar from "./NotesAppBar";
 
@@ -17,6 +17,10 @@ const NoteScreen = () => {
     body: note?.body || "",
     title: note?.title || "",
   });
+
+  const handleDelete = () => {
+    dispatch(startDeleteNote(note?.id!));
+  };
 
   useEffect(() => {
     if (currentNoteId.current !== note!.id) {
@@ -62,7 +66,7 @@ const NoteScreen = () => {
         )}
       </div>
 
-      <button className="btn btn-danger" type="button">
+      <button className="btn btn-danger" onClick={handleDelete} type="button">
         Delete
       </button>
     </div>
