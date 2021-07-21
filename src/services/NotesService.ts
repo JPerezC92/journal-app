@@ -14,4 +14,8 @@ export class NotesService {
 
     return notes;
   }
+
+  static async update(uid: string, note: Note): Promise<void> {
+    await db.doc(`${uid}/journal/notes/${note.id}`).update(note);
+  }
 }

@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import Swal from "sweetalert2";
 import { db } from "../../firebase";
 import { NotesService } from "../../services";
 import { RootState } from "../../store/store";
@@ -7,6 +8,7 @@ import { Note, notesActions } from "./notesReducer";
 enum NotesThunks {
   START_NEW_NOTE = "START_NEW_NOTE",
   START_LOADING_NOTES = "START_LOADING_NOTES",
+  START_SAVE_NOTE = "START_SAVE_NOTE",
 }
 
 export const startNewNote = createAsyncThunk(
@@ -32,5 +34,17 @@ export const startLoadingNotes = createAsyncThunk<void, string>(
   async (uid, { dispatch }) => {
     const notes = await NotesService.getAll(uid);
     dispatch(notesActions.setNotes(notes));
+  }
+);
+
+export const startSaveNote = createAsyncThunk<void, Note>(
+  NotesThunks.START_SAVE_NOTE,
+  async (note, { dispatch, getState }) => {
+    const { user } = (getState() as RootState).authReducer;
+
+    await NotesService.update(user.uid, note);
+
+    dispatch(notesActions.refreshNote(note));
+    Swal.fire("Saved", note.title, "success");
   }
 );
