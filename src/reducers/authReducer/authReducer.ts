@@ -31,6 +31,7 @@ export const authSlice = createSlice({
         displayName,
         uid,
       };
+      return state;
     },
     logout: (state) => (state = initialState),
   },

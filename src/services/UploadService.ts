@@ -14,7 +14,8 @@ export class UploadService {
 
         return cloudResp.secure_url as string;
       } else {
-        throw await resp.json();
+        // throw await resp.json();
+        return null;
       }
     } catch (error) {
       console.log(error);
