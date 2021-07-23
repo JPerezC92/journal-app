@@ -31,6 +31,7 @@ const notesSlice = createSlice({
       state.notes = state.notes.map((note) =>
         note.id === payload.id ? payload : note
       );
+      state.active = payload;
     },
 
     deleteNote: (state, { payload }: PayloadAction<string>) => {

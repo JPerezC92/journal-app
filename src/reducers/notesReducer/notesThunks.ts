@@ -18,7 +18,7 @@ export const startNewNote = createAsyncThunk(
     };
 
     const docRef = await db.collection(`${uid}/journal/notes`).add(newNote);
-    docRef.update({ id: docRef.id });
+    await docRef.update({ id: docRef.id });
 
     dispatch(notesActions.setNoteActive({ ...newNote, id: docRef.id }));
     dispatch(notesActions.addNewNote({ ...newNote, id: docRef.id }));
@@ -60,9 +60,8 @@ export const startUploadingImg = createAsyncThunk<void, File>(
     });
 
     const fileUrl = await UploadService.image(file);
-
     Swal.close();
-    if (fileUrl) dispatch(startSaveNote({ ...note, imageUrl: fileUrl }));
+    if (fileUrl) await dispatch(startSaveNote({ ...note, imageUrl: fileUrl }));
   }
 );
 

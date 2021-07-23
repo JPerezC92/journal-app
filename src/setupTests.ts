@@ -12,3 +12,12 @@ Enzyme.configure({ adapter: new Adapter() });
 expect.addSnapshotSerializer(
   createSerializer({ mode: "deep" }) as unknown as Plugin
 );
+
+const noScroll = () => {};
+
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "scrollTo", {
+    value: noScroll,
+    writable: true,
+  });
+}

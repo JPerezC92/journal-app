@@ -26,7 +26,6 @@ const AppRouter = () => {
       }
       setChecking(() => false);
     });
-    return () => {};
   }, [dispatch]);
 
   if (checking) return <div>Loading...</div>;
