@@ -33,7 +33,7 @@ const NoteScreen = () => {
   }, [note, reset]);
 
   useEffect(() => {
-    dispatch(notesActions.setNoteActive({ ...formValues }));
+    dispatch(notesActions.updateNoteActive({ ...formValues }));
   }, [formValues, dispatch]);
 
   return (

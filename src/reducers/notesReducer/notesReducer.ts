@@ -21,7 +21,10 @@ const notesSlice = createSlice({
     addNewNote: (state, { payload }: PayloadAction<Note>) => {
       state.notes = [...state.notes, payload];
     },
-    setNoteActive: (state, action: PayloadAction<Partial<Note>>) => {
+    setNoteActive: (state, action: PayloadAction<Note>) => {
+      state.active = action.payload;
+    },
+    updateNoteActive: (state, action: PayloadAction<Partial<Note>>) => {
       state.active = { ...state.active!, ...action.payload };
     },
     setNotes: (state, action: PayloadAction<Note[]>) => {
