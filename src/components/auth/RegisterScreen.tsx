@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import useForm from "../../hooks/useForm/useForm";
 import { uiActions } from "../../reducers";
-import { register } from "../../reducers/authReducer";
+import { startRegister } from "../../reducers/authReducer";
 import { ValidatorService } from "../../services";
 
 import { RootState } from "../../store/store";
@@ -28,7 +28,7 @@ const RegisterScreen = () => {
       validationService.validateRegisterForm(formValues);
 
     if (success) {
-      dispatch(register(formValues));
+      dispatch(startRegister(formValues));
     } else {
       dispatch(uiActions.setError(errorMessage));
     }

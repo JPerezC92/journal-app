@@ -33,7 +33,7 @@ export const startLogout = createAsyncThunk(
   }
 );
 
-export const register = createAsyncThunk<
+export const startRegister = createAsyncThunk<
   void,
   {
     email: string;
@@ -44,7 +44,7 @@ export const register = createAsyncThunk<
   dispatch(uiActions.uiStartLoading());
   const { email, password, name } = args;
 
-  firebase
+  await firebase
     .auth()
     .createUserWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
