@@ -17,7 +17,7 @@ export class AuthService {
     };
   }
 
-  static async loginWithFirebase(): Promise<User> {
+  static async loginWithGoogle(): Promise<User> {
     const userCred = await firebase.auth().signInWithPopup(googleAuthProvider);
 
     const { displayName, uid } = userCred.user!;

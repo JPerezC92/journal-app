@@ -21,14 +21,13 @@ const LoginScreen = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     dispatch(
       startLogin(() => AuthService.loginWithEmailAndPassword(email, password))
     );
   };
 
   const handleGoogleLogin = () => {
-    dispatch(startLogin(AuthService.loginWithFirebase));
+    dispatch(startLogin(AuthService.loginWithGoogle));
   };
 
   return (
@@ -64,6 +63,7 @@ const LoginScreen = () => {
           className="btn btn-primary btn-block"
           type="submit"
           disabled={ui.loading}
+          aria-label="submit-button"
         >
           Login
         </button>
@@ -72,7 +72,12 @@ const LoginScreen = () => {
         <div className="auth__social-networks">
           <p>Login with social networks</p>
 
-          <div className="google-btn" onClick={handleGoogleLogin}>
+          <div
+            role="button"
+            data-testid="google-login-button"
+            className="google-btn"
+            onClick={handleGoogleLogin}
+          >
             <div className="google-icon-wrapper">
               <img
                 className="google-icon"
