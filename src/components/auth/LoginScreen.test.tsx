@@ -40,6 +40,7 @@ describe("Test on <LoginScreen />", () => {
         </Provider>
       )
       .toJSON();
+
     expect(tree).toMatchSnapshot();
   });
 

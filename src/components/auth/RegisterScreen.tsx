@@ -8,24 +8,24 @@ import { ValidatorService } from "../../services";
 import { RootState } from "../../store/store";
 
 const RegisterScreen = () => {
-  const validationService = new ValidatorService();
+  const validatorService = new ValidatorService();
   const { errorMessage } = useSelector((state: RootState) => state.uiReducer);
   const ui = useSelector((state: RootState) => state.uiReducer);
 
   const dispatch = useDispatch();
 
   const { formValues, handleInputChange } = useForm({
-    name: "Philip",
-    email: "123123@gmail.com",
-    password: "123456",
-    confirmPassword: "123456",
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const { name, email, password, confirmPassword } = formValues;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { success, errorMessage } =
-      validationService.validateRegisterForm(formValues);
+      validatorService.validateRegisterForm(formValues);
 
     if (success) {
       dispatch(startRegister(formValues));
@@ -41,6 +41,7 @@ const RegisterScreen = () => {
       {errorMessage && <div className="auth__alert-error">{errorMessage}</div>}
 
       <form
+        aria-label="form"
         onSubmit={handleSubmit}
         className="animate__animated animate__fadeIn animate__faster"
       >
