@@ -1,10 +1,18 @@
-import renderer, { act } from "react-test-renderer";
-import { fireEvent, RenderResult } from "@testing-library/react";
+import renderer from "react-test-renderer";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  RenderResult,
+} from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
-import { store } from "../../store/store";
-import { render } from "../../test-utils/render";
+import { mockStore, storeCleanActions } from "../../test-utils/mockStore";
+import * as authThunks from "../../reducers/authReducer/authThunks";
+import { uiActions } from "../../reducers/uiReducer/uiReducer";
+import { ValidatorService } from "../../services";
 import RegisterScreen from "./RegisterScreen";
+import { store } from "../../store/store";
 
 function insertFormValues(
   component: RenderResult<
@@ -29,6 +37,19 @@ function insertFormValues(
 }
 
 describe("Test on <RegisterScreen />", () => {
+  let dispatch = mockStore.dispatch;
+
+  beforeEach(() => {
+    dispatch = mockStore.dispatch;
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    dispatch(storeCleanActions.clean());
+    cleanup();
+  });
+
   test("should match the snapshot correctly", () => {
     const tree = renderer
       .create(
@@ -44,83 +65,96 @@ describe("Test on <RegisterScreen />", () => {
   });
 
   test("should register a new user", () => {
-    const { component, store } = render(
-      <MemoryRouter>
-        <RegisterScreen />
-      </MemoryRouter>
-    );
+    jest.spyOn(ValidatorService.prototype, "validateRegisterForm");
+    jest.spyOn(authThunks, "startRegister");
+    jest.spyOn(uiActions, "setError");
 
-    jest.spyOn(store, "dispatch");
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <RegisterScreen />
+        </MemoryRouter>
+      </Provider>
+    );
 
     insertFormValues(component);
 
-    const button = component.getByRole("button");
-    act(() => {
-      fireEvent.click(button);
+    const registerButton = component.getByRole("button");
+
+    fireEvent.click(registerButton);
+
+    expect(authThunks.startRegister).toHaveBeenCalledTimes(1);
+    expect(authThunks.startRegister).toHaveBeenCalledWith({
+      email: "testing_new_user@gmail.com",
+      name: "testing new user",
+      password: "123456",
+      confirmPassword: "123456",
     });
 
-    expect(store.dispatch).toHaveBeenCalledTimes(1);
+    expect(uiActions.setError).not.toHaveBeenCalled();
+    expect(
+      ValidatorService.prototype.validateRegisterForm
+    ).toHaveBeenCalledTimes(1);
   });
 
-  test("should display an email error", () => {
-    const { component } = render(
-      <MemoryRouter>
-        <RegisterScreen />
-      </MemoryRouter>
+  test("should display an email error", async () => {
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <RegisterScreen />
+        </MemoryRouter>
+      </Provider>
     );
 
     insertFormValues(component);
 
     const emailField = component.getByPlaceholderText("Email");
+    const registerButton = component.getByRole("button");
+
     fireEvent.change(emailField, { target: { value: "" } });
+    fireEvent.click(registerButton);
 
-    const button = component.getByRole("button");
-
-    act(() => {
-      fireEvent.click(button);
-    });
     const errorDiv = component.getByText("Email invalid");
-
     expect(errorDiv).toHaveTextContent("Email invalid");
   });
 
-  test("should display an name error", () => {
-    const { component } = render(
-      <MemoryRouter>
-        <RegisterScreen />
-      </MemoryRouter>
+  test("should display a name error", () => {
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <RegisterScreen />
+        </MemoryRouter>
+      </Provider>
     );
 
     insertFormValues(component);
 
     const nameField = component.getByPlaceholderText("Name");
-    fireEvent.change(nameField, { target: { value: "" } });
+    const registerButton = component.getByRole("button");
 
-    const button = component.getByRole("button");
-    act(() => {
-      fireEvent.click(button);
-    });
+    fireEvent.change(nameField, { target: { value: "" } });
+    fireEvent.click(registerButton);
 
     const errorDiv = component.getByText("Name is required");
     expect(errorDiv).toHaveTextContent("Name is required");
   });
 
   test("should display a password error", () => {
-    const { component } = render(
-      <MemoryRouter>
-        <RegisterScreen />
-      </MemoryRouter>
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <RegisterScreen />
+        </MemoryRouter>
+      </Provider>
     );
 
     insertFormValues(component);
 
     const passwordField = component.getByPlaceholderText("Password");
     const button = component.getByRole("button");
-    fireEvent.change(passwordField, { target: { value: "" } });
 
-    act(() => {
-      fireEvent.click(button);
-    });
+    fireEvent.change(passwordField, { target: { value: "" } });
+    fireEvent.click(button);
 
     const errorDiv = component.getByText(
       "Password should be at least 5 characters"
@@ -132,22 +166,22 @@ describe("Test on <RegisterScreen />", () => {
   });
 
   test("should display a confirmPassword error", () => {
-    const { component } = render(
-      <MemoryRouter>
-        <RegisterScreen />
-      </MemoryRouter>
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <RegisterScreen />
+        </MemoryRouter>
+      </Provider>
     );
 
     insertFormValues(component);
 
     const confirmPasswordField =
       component.getByPlaceholderText("Confirm password");
-    fireEvent.change(confirmPasswordField, { target: { value: "" } });
+    const registerButton = component.getByRole("button");
 
-    const button = component.getByRole("button");
-    act(() => {
-      fireEvent.click(button);
-    });
+    fireEvent.change(confirmPasswordField, { target: { value: "" } });
+    fireEvent.click(registerButton);
 
     const errorDiv = component.getByText("Password should match each other");
 
@@ -155,21 +189,21 @@ describe("Test on <RegisterScreen />", () => {
   });
 
   test("should display a passwordd error", () => {
-    const { component } = render(
-      <MemoryRouter>
-        <RegisterScreen />
-      </MemoryRouter>
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <RegisterScreen />
+        </MemoryRouter>
+      </Provider>
     );
 
     insertFormValues(component);
 
+    const registerButton = component.getByRole("button");
     const passwordField = component.getByPlaceholderText("Password");
-    fireEvent.change(passwordField, { target: { value: "aasddas" } });
 
-    const button = component.getByRole("button");
-    act(() => {
-      fireEvent.click(button);
-    });
+    fireEvent.change(passwordField, { target: { value: "aasddas" } });
+    fireEvent.click(registerButton);
 
     const errorDiv = component.getByText("Password should match each other");
 
