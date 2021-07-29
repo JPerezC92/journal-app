@@ -7,10 +7,6 @@ describe("Test on authReducer", () => {
   let state = store.getState();
   let dispatch = store.dispatch;
 
-  //   beforeEach(() => {
-  //     state = store.getState();
-  //   });
-
   afterEach(async () => {
     await dispatch(startLogout());
   });
@@ -42,7 +38,7 @@ describe("Test on authReducer", () => {
     state = store.getState();
 
     expect(state.authReducer.user.isLoggedIn).toBe(true);
-    expect(state.authReducer.user.uid).toBe("hKNStlAarlTwrGB7pvHzBPElOCG2");
+    expect(state.authReducer.user.uid).toBe("UO0hZ06iY3V0yfn5IAQZXGPmPun1");
 
     await dispatch(startLogout());
     state = store.getState();

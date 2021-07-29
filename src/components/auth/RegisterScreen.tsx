@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import useForm from "../../hooks/useForm/useForm";
+import { useForm } from "../../hooks";
 import { uiActions } from "../../reducers";
 import { startRegister } from "../../reducers/authReducer";
 import { ValidatorService } from "../../services";

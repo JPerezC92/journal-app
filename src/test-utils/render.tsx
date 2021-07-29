@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { render, RenderOptions } from "@testing-library/react";
 import { Provider } from "react-redux";
-import { uiReducer, authReducer, notesReducer } from "./reducers";
+import { uiReducer, authReducer, notesReducer } from "../reducers";
 
 const customRender = (
   ui: React.ReactElement<any, string | React.JSXElementConstructor<any>>,

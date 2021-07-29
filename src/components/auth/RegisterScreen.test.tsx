@@ -3,7 +3,7 @@ import { fireEvent, RenderResult } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
 import { store } from "../../store/store";
-import { render } from "../../test-utils";
+import { render } from "../../test-utils/render";
 import RegisterScreen from "./RegisterScreen";
 
 function insertFormValues(

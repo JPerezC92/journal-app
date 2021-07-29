@@ -12,6 +12,8 @@ const JournalEntry = (props: { note: Note }) => {
 
   return (
     <div
+      aria-label="list"
+      // role="list"
       className="journal__entry pointer animate__animated animate__fadeIn animate__faster"
       onClick={handleEntryClick}
     >

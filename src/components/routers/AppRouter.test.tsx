@@ -1,4 +1,4 @@
-import { render } from "../../test-utils";
+import { render } from "../../test-utils/render";
 import { MemoryRouter } from "react-router-dom";
 import AppRouter from "./AppRouter";
 import { authActions } from "../../reducers";
@@ -10,6 +10,10 @@ describe("Test on <AppRouter />", () => {
         <AppRouter />
       </MemoryRouter>
     );
+
+    expect(
+      await component.findByLabelText("submit-button")
+    ).toBeInTheDocument();
 
     expect(await component.findByRole("heading")).toHaveTextContent("Login");
 

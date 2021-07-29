@@ -8,7 +8,7 @@ type UseForm = <T>(values: T) => {
   reset: (newFormState?: T) => void;
 };
 
-const useForm: UseForm = (values) => {
+export const useForm: UseForm = (values) => {
   const [formValues, setFormValues] = useState(values);
 
   const reset = (newFormState = values) => {
@@ -25,5 +25,3 @@ const useForm: UseForm = (values) => {
 
   return { formValues, handleInputChange, reset };
 };
-
-export default useForm;
