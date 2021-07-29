@@ -1,34 +1,61 @@
-import { render } from "../../test-utils/render";
+import { cleanup, render } from "@testing-library/react";
+import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
+import { mockStore, storeCleanActions } from "../../test-utils/mockStore";
+import { AuthService } from "../../services";
+import { authActions, startLogin } from "../../reducers";
+import * as notesThunks from "../../reducers/notesReducer/notesThunks";
 import AppRouter from "./AppRouter";
-import { authActions } from "../../reducers";
 
 describe("Test on <AppRouter />", () => {
-  test("should display login when the user isn't autenticated and main page when is autenticated", async () => {
-    const { component, store } = render(
-      <MemoryRouter>
-        <AppRouter />
-      </MemoryRouter>
+  let dispatch = mockStore.dispatch;
+
+  beforeEach(() => {
+    dispatch = mockStore.dispatch;
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    dispatch(storeCleanActions.clean());
+    cleanup();
+  });
+
+  test("should call authActions.login if user is authenticated", async () => {
+    jest.spyOn(authActions, "login");
+    jest.spyOn(notesThunks, "startLoadingNotes");
+
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <AppRouter />
+        </MemoryRouter>
+      </Provider>
     );
 
-    expect(
-      await component.findByLabelText("submit-button")
-    ).toBeInTheDocument();
+    const loadingScreen = await component.findByText("Loading...");
+    expect(loadingScreen).not.toBeInTheDocument();
 
-    expect(await component.findByRole("heading")).toHaveTextContent("Login");
+    const loginScreen = await component.findByRole("heading");
 
-    store.dispatch(
-      authActions.login({
-        uid: "JKZHKJSDFNBASJKDASdklfhakjh",
-        displayName: "Testing",
-      })
+    expect(loginScreen).toHaveTextContent("Login");
+
+    // Authenticating user
+    await dispatch(
+      startLogin(() =>
+        AuthService.loginWithEmailAndPassword("test@testing.com", "123456")
+      )
     );
 
-    const aside = await component.findByRole("complementary");
-    const main = await component.findByRole("main");
+    expect(authActions.login).toHaveBeenCalledTimes(1);
+    expect(notesThunks.startLoadingNotes).toHaveBeenCalledTimes(1);
+    expect(notesThunks.startLoadingNotes).toHaveBeenCalledWith(
+      "UO0hZ06iY3V0yfn5IAQZXGPmPun1"
+    );
 
-    expect(aside).toBeInTheDocument();
-    expect(aside).toHaveTextContent("Logout");
-    expect(main).toHaveTextContent("Select something");
+    expect(component.container).toHaveTextContent("Logout");
+    expect(component.container).toHaveTextContent("testingAccount");
+    expect(component.container).toHaveTextContent("New entry");
+    expect(component.container).toHaveTextContent("Select something");
   });
 });

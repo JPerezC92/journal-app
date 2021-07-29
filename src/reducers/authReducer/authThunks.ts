@@ -11,9 +11,7 @@ export const startLogin = createAsyncThunk<void, () => Promise<User>>(
   async (loginCallback, { dispatch }) => {
     try {
       dispatch(uiActions.uiStartLoading());
-      const user = await loginCallback();
-
-      dispatch(authActions.login(user));
+      await loginCallback();
       dispatch(uiActions.uiFinishLoading());
     } catch (error) {
       console.log(error);

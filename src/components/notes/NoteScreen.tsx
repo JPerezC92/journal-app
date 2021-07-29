@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useForm from "../../hooks/useForm";
+import { useForm } from "../../hooks";
 import { notesActions, startDeleteNote } from "../../reducers";
 import { RootState } from "../../store/store";
 import NotesAppBar from "./NotesAppBar";
