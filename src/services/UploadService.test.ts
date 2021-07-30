@@ -2,9 +2,9 @@ import { UploadService } from "./UploadService";
 import cloudinary from "cloudinary";
 
 (cloudinary as any).config({
-  cloud_name: "jperezc92",
-  api_key: "963558894618842",
-  api_secret: "ugaIySiXppR2jHRrc-5w0VcsU1g",
+  cloud_name: process.env.REACT_APP_CLOUDINARY_NAME,
+  api_key: process.env.REACT_APP_CLOUDINARY_API_KEY,
+  api_secret: process.env.REACT_APP_CLOUDINARY_API_SECRET,
   secure: true,
 });
 
@@ -25,7 +25,7 @@ describe("Test o UploadService", () => {
     cloudinary.v2.api.delete_resources([imageId], {}, () => {});
   });
 
-  test("should return an error", async () => {
+  test("should return null", async () => {
     const file = new File([], "foto.png");
     const url = await UploadService.image(file);
 
