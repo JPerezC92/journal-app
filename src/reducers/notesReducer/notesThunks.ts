@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import Swal from "sweetalert2";
-import { db } from "../../firebase";
 import { NotesService, UploadService } from "../../services";
 import { RootState } from "../../store/store";
 import { Types } from "../../types/types";
@@ -10,18 +9,16 @@ export const startNewNote = createAsyncThunk(
   Types.NOTES_START_NEW_NOTE,
   async (_, { dispatch, getState }) => {
     const { uid } = (getState() as RootState).authReducer.user;
-    const newNote: Omit<Note, "id"> = {
+
+    const note = await NotesService.create(uid, {
       title: "",
       body: "",
-      date: new Date().getTime(),
+
       imageUrl: null,
-    };
+    });
 
-    const docRef = await db.collection(`${uid}/journal/notes`).add(newNote);
-    await docRef.update({ id: docRef.id });
-
-    dispatch(notesActions.setNoteActive({ ...newNote, id: docRef.id }));
-    dispatch(notesActions.addNewNote({ ...newNote, id: docRef.id }));
+    dispatch(notesActions.setNoteActive(note));
+    dispatch(notesActions.addNewNote(note));
   }
 );
 

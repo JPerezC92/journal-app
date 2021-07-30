@@ -53,7 +53,7 @@ export const startRegister = createAsyncThunk<
       dispatch(uiActions.uiFinishLoading());
     })
     .catch((error) => {
-      console.log(error);
+      if (process.env.NODE_ENV !== "test") console.log(error);
       dispatch(uiActions.uiFinishLoading());
       Swal.fire("Error", error.message, "error");
     });
