@@ -35,7 +35,12 @@ export class ValidatorService {
   }
 
   private validateEmail(email: string) {
+    if (email.length === 0) {
+      this.setErrorMessage("Email is required");
+      return validator.isEmail(email);
+    }
     this.setErrorMessage("Email invalid");
+
     return validator.isEmail(email);
   }
 
