@@ -1,10 +1,10 @@
-import { store } from "../../store/store";
+import { mockStore } from "../../test-utils/mockStore";
 import { authActions } from "../authReducer";
 import { notesActions } from "./notesReducer";
 
 describe("Test on notes reducer", () => {
-  let state = store.getState();
-  let dispatch = store.dispatch;
+  let state = mockStore.getState();
+  let dispatch = mockStore.dispatch;
 
   const note = {
     id: "test",
@@ -16,7 +16,7 @@ describe("Test on notes reducer", () => {
 
   beforeEach(() => {
     dispatch(authActions.login({ displayName: "Testing", uid: "TESTING" }));
-    state = store.getState();
+    state = mockStore.getState();
   });
 
   afterEach(() => {
@@ -28,7 +28,7 @@ describe("Test on notes reducer", () => {
 
     const {
       notesReducer: { notes },
-    } = store.getState();
+    } = mockStore.getState();
 
     expect(notes.length).toBe(1);
     expect(notes[0]).toEqual(note);
@@ -39,7 +39,7 @@ describe("Test on notes reducer", () => {
 
     const {
       notesReducer: { active },
-    } = store.getState();
+    } = mockStore.getState();
 
     expect(active).not.toBe(null);
     expect(active).toEqual(note);
@@ -57,7 +57,7 @@ describe("Test on notes reducer", () => {
 
     const {
       notesReducer: { active },
-    } = store.getState();
+    } = mockStore.getState();
 
     expect(active).not.toEqual(note);
     expect(active?.title).toBe("note updated");
@@ -75,7 +75,7 @@ describe("Test on notes reducer", () => {
 
     const {
       notesReducer: { notes },
-    } = store.getState();
+    } = mockStore.getState();
 
     expect(notes.length).toBe(3);
     notes.forEach((note, i) => expect(note.body).toBe(`note ${i + 1}`));
@@ -101,7 +101,7 @@ describe("Test on notes reducer", () => {
 
     const {
       notesReducer: { notes },
-    } = store.getState();
+    } = mockStore.getState();
 
     const noteExpect = notes.find((note) => note.id === noteUpdate.id);
 
@@ -119,12 +119,12 @@ describe("Test on notes reducer", () => {
       ])
     );
 
-    state = store.getState();
+    state = mockStore.getState();
     expect(state.notesReducer.notes.length).toBe(3);
 
     dispatch(notesActions.deleteNote("test 2"));
 
-    state = store.getState();
+    state = mockStore.getState();
     expect(state.notesReducer.notes.length).toBe(2);
   });
 
@@ -136,16 +136,16 @@ describe("Test on notes reducer", () => {
         { ...note, id: "test 3", body: "note 3" },
       ])
     );
-    state = store.getState();
+    state = mockStore.getState();
 
     dispatch(notesActions.setNoteActive(state.notesReducer.notes[1]));
-    state = store.getState();
+    state = mockStore.getState();
 
     expect(state.notesReducer.notes.length).toBe(3);
     expect(state.notesReducer.active?.id).toBe("test 2");
 
     dispatch(notesActions.notesLogoutCleaning());
-    state = store.getState();
+    state = mockStore.getState();
 
     expect(state.notesReducer.notes.length).toBe(0);
     expect(state.notesReducer.active).toBeNull();
