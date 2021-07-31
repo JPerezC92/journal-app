@@ -1,49 +1,62 @@
-import cloudinary from "cloudinary";
-import { NotesService } from "../../services";
-import { store } from "../../store/store";
-import { authActions, startLogout } from "../authReducer";
-import { startNewNote, startUploadingImg } from "./notesThunks";
-
-(cloudinary as any).config({
-  cloud_name: process.env.REACT_APP_CLOUDINARY_NAME,
-  api_key: process.env.REACT_APP_CLOUDINARY_API_KEY,
-  api_secret: process.env.REACT_APP_CLOUDINARY_API_SECRET,
-  secure: true,
-});
+import { mockStore } from "../../test-utils/mockStore";
+import { NotesService, UploadService } from "../../services";
+import { notesActions } from "./notesReducer";
+import { authActions } from "../authReducer";
+import * as notesThunks from "./notesThunks";
 
 describe("Test on notesThunks", () => {
-  let dispatch = store.dispatch;
-  let state = store.getState();
+  // setting the state
+  let dispatch = mockStore.dispatch;
 
-  beforeEach(() => {
-    dispatch(authActions.login({ displayName: "Test", uid: "TESTING" }));
-    dispatch = store.dispatch;
-    state = store.getState();
-  });
+  const note = {
+    id: "Pg8oiE1YVopzEZRGcOos",
+    body: "",
+    imageUrl: null,
+    date: new Date().getTime(),
+    title: "",
+  };
 
-  afterEach(async () => {
-    await dispatch(startLogout());
-  });
+  dispatch(notesActions.setNoteActive(note));
+  dispatch(
+    authActions.login({
+      displayName: "Test",
+      uid: "TESTING_START_UPLOADING_IMAGE",
+    })
+  );
 
   test("startUploadingImg should update the urlImage of the active note", async () => {
+    const imageUrl =
+      "https://res.cloudinary.com/jperezc92/image/upload/v1627334537/az7wmlmgzxwhmhmxytvx.png";
+    jest
+      .spyOn(UploadService, "image")
+      .mockImplementation(() => Promise.resolve(imageUrl));
+    jest.spyOn(NotesService, "update").mockImplementation(jest.fn());
+
+    let state = mockStore.getState();
+
     const resp = await fetch(
       `https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png`
     );
     const blob = await resp.blob();
-    const file = await new File([blob], "foto.png");
+    const file = new File([blob], "foto.png");
 
-    await dispatch(startNewNote());
-    await dispatch(startUploadingImg(file));
+    expect(state.notesReducer.active?.imageUrl).toBeNull();
 
-    state = store.getState();
+    await dispatch(notesThunks.startUploadingImg(file));
+    state = mockStore.getState();
 
-    expect(typeof state.notesReducer.active?.imageUrl!).toBe("string");
-
-    const url = state.notesReducer.active?.imageUrl!;
-    const segments = url.split("/");
-    const imageId = segments[segments.length - 1].replace(".png", "");
-
-    cloudinary.v2.api.delete_resources([imageId], {}, () => {});
-    await NotesService.delete("TESTING", state.notesReducer.active?.id!);
-  }, 99999);
+    expect(UploadService.image).toHaveBeenCalledTimes(1);
+    expect(UploadService.image).toHaveBeenCalledWith(file);
+    expect(state.notesReducer.active?.imageUrl).toBe(imageUrl);
+    expect(NotesService.update).toHaveBeenCalledWith(
+      "TESTING_START_UPLOADING_IMAGE",
+      {
+        body: "",
+        date: expect.any(Number),
+        id: "Pg8oiE1YVopzEZRGcOos",
+        imageUrl: imageUrl,
+        title: "",
+      }
+    );
+  });
 });

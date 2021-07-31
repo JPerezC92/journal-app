@@ -13,7 +13,6 @@ export const startNewNote = createAsyncThunk(
     const note = await NotesService.create(uid, {
       title: "",
       body: "",
-
       imageUrl: null,
     });
 
