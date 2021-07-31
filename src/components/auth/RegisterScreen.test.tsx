@@ -114,8 +114,14 @@ describe("Test on <RegisterScreen />", () => {
     fireEvent.change(emailField, { target: { value: "" } });
     fireEvent.click(registerButton);
 
-    const errorDiv = component.getByText("Email invalid");
-    expect(errorDiv).toHaveTextContent("Email invalid");
+    const errorDiv = component.getByText("Email is required");
+    expect(errorDiv).toHaveTextContent("Email is required");
+
+    fireEvent.change(emailField, { target: { value: "emailinvalid@" } });
+    fireEvent.click(registerButton);
+
+    const errorDiv2 = component.getByText("Email invalid");
+    expect(errorDiv2).toHaveTextContent("Email invalid");
   });
 
   test("should display a name error", () => {

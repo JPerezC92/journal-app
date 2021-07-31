@@ -16,7 +16,6 @@ const UISlice = createSlice({
   reducers: {
     setError: (state, action: PayloadAction<string | null>) => {
       state.errorMessage = action.payload;
-      state.loading = true;
     },
     removeError: (state) => {
       state.errorMessage = null;
