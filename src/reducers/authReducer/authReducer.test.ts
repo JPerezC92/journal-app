@@ -1,17 +1,24 @@
-import { store } from "../../store/store";
+import { mockStore } from "../../test-utils/mockStore";
 import { authActions } from "./authReducer";
 
 describe("Test on authReducer", () => {
-  test("should login the user", () => {
-    let state = store.getState();
+  let dispatch = mockStore.dispatch;
+  let state = mockStore.getState();
 
+  beforeEach(() => {
+    dispatch = mockStore.dispatch;
+  });
+
+  test("should login the user", () => {
     const userInfo = {
       displayName: "Philip",
       uid: "JKZHKJSDFNBASJKDASdklfhakjh",
     };
 
-    store.dispatch(authActions.login(userInfo));
-    state = store.getState();
+    dispatch(authActions.login(userInfo));
+
+    state = mockStore.getState();
+
     expect(state.authReducer.user).toEqual({
       isLoggedIn: true,
       ...userInfo,
@@ -19,16 +26,15 @@ describe("Test on authReducer", () => {
   });
 
   test("should logout the user", () => {
-    let state = store.getState();
-
     const userInfo = {
       displayName: "Philip",
       uid: "JKZHKJSDFNBASJKDASdklfhakjh",
     };
-    store.dispatch(authActions.login(userInfo));
-    store.dispatch(authActions.logout());
+    dispatch(authActions.login(userInfo));
+    dispatch(authActions.logout());
 
-    state = store.getState();
+    state = mockStore.getState();
+
     expect(state.authReducer.user).toEqual({
       isLoggedIn: false,
     });
