@@ -1,12 +1,14 @@
 import { useState } from "react";
 
-type UseForm = <T>(values: T) => {
-  formValues: T;
-  handleInputChange: (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => void;
-  reset: (newFormState?: T) => void;
-};
+interface UseForm {
+  <FormValues>(values: FormValues): {
+    formValues: FormValues;
+    handleInputChange: (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => void;
+    reset: (newFormState?: FormValues) => void;
+  };
+}
 
 export const useForm: UseForm = (values) => {
   const [formValues, setFormValues] = useState(values);
