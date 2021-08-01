@@ -3,8 +3,9 @@
  */
 import Swal from "sweetalert2";
 import { NotesService } from "../../services";
-import { store } from "../../store/store";
-import { authActions, startLogout } from "../authReducer";
+import { mockStore, storeCleanActions } from "../../test-utils/mockStore";
+import { authActions } from "../authReducer";
+import { notesActions } from "./notesReducer";
 import {
   startDeleteNote,
   startLoadingNotes,
@@ -15,61 +16,79 @@ import {
 describe("Test on notesThunks startNewNote, startLoadingNotes, startSaveNote", () => {
   Swal.fire = jest.fn();
 
-  let dispatch = store.dispatch;
-  let state = store.getState();
+  let dispatch = mockStore.dispatch;
+  let state = mockStore.getState();
+  const noteMock = {
+    body: "",
+    date: new Date().getTime(),
+    id: "jsdkllhf378das",
+    imageUrl: null,
+    title: "",
+  };
 
   beforeEach(() => {
+    jest.restoreAllMocks();
+    dispatch = mockStore.dispatch;
+
+    // mock User
     dispatch(authActions.login({ displayName: "Test", uid: "TESTING" }));
-    dispatch = store.dispatch;
-    state = store.getState();
+
+    state = mockStore.getState();
   });
 
   afterEach(async () => {
-    await dispatch(startLogout());
+    dispatch(storeCleanActions.clean());
   });
 
   test("startNewNote should create a new note", async () => {
+    jest.spyOn(NotesService, "create").mockResolvedValue(noteMock);
+    jest.spyOn(notesActions, "setNoteActive");
+    jest.spyOn(notesActions, "addNewNote");
+
     await dispatch(startNewNote());
 
-    state = store.getState();
+    state = mockStore.getState();
 
     expect(state.notesReducer.active).toEqual({
-      body: "",
+      ...noteMock,
       date: expect.any(Number),
-      id: expect.any(String),
+    });
+    expect(NotesService.create).toHaveBeenCalledTimes(1);
+    expect(NotesService.create).toHaveBeenCalledWith("TESTING", {
+      body: "",
       imageUrl: null,
       title: "",
     });
-
     expect(state.notesReducer.notes.length).toBe(1);
-
-    await NotesService.delete("TESTING", state.notesReducer.active?.id!);
+    expect(notesActions.setNoteActive).toHaveBeenCalledTimes(1);
+    expect(notesActions.setNoteActive).toHaveBeenCalledWith({
+      ...noteMock,
+      date: expect.any(Number),
+    });
+    expect(notesActions.addNewNote).toHaveBeenCalledTimes(1);
+    expect(notesActions.addNewNote).toHaveBeenCalledWith({
+      ...noteMock,
+      date: expect.any(Number),
+    });
   });
 
   test("startLoadingNotes should load all the user notes", async () => {
+    jest
+      .spyOn(NotesService, "getAll")
+      .mockResolvedValue([noteMock, noteMock, noteMock]);
+
     await dispatch(startLoadingNotes(state.authReducer.user.uid));
-    state = store.getState();
+    state = mockStore.getState();
 
-    const note = {
-      body: expect.any(String),
-      date: expect.any(Number),
-      id: expect.any(String),
-      imageUrl: null,
-      title: expect.any(String),
-    };
-
+    expect(NotesService.getAll).toHaveBeenCalledTimes(1);
+    expect(NotesService.getAll).toHaveBeenCalledWith("TESTING");
     expect(state.notesReducer.notes.length).toBe(3);
-    expect(state.notesReducer.notes).toEqual([note, note, note]);
   });
 
   test("startSaveNote should update the note", async () => {
-    const noteOriginal = {
-      title: "",
-      date: 1626989415067,
-      id: "fhq4yrzQtGiOy7RihsUE",
-      body: "",
-      imageUrl: null,
-    };
+    jest.spyOn(NotesService, "update").mockResolvedValue();
+    jest.spyOn(notesActions, "refreshNote");
+
     const noteUpdate = {
       title: "Testing note Update",
       date: 1626989415067,
@@ -77,43 +96,43 @@ describe("Test on notesThunks startNewNote, startLoadingNotes, startSaveNote", (
       body: "Testing note Update",
       imageUrl: null,
     };
-    await dispatch(startLoadingNotes(state.authReducer.user.uid));
     await dispatch(startSaveNote(noteUpdate));
-    state = store.getState();
+    state = mockStore.getState();
 
-    const note = state.notesReducer.notes.find(
-      (note) => note.id === noteOriginal.id
-    );
+    const { active, notes } = state.notesReducer;
 
-    expect(note).toEqual(noteUpdate);
-    expect(note?.title).toBe("Testing note Update");
-    expect(note?.body).toBe("Testing note Update");
+    expect(NotesService.update).toHaveBeenCalledTimes(1);
+    expect(NotesService.update).toHaveBeenCalledWith("TESTING", noteUpdate);
+    expect(notesActions.refreshNote).toHaveBeenCalled();
+    expect(notesActions.refreshNote).toHaveBeenCalledWith(noteUpdate);
+    expect(active).toEqual(noteUpdate);
+    expect(notes[0].title).toBe("Testing note Update");
+    expect(notes[0].body).toBe("Testing note Update");
     expect(Swal.fire).toHaveBeenCalledWith(
       "Saved",
       "Testing note Update",
       "success"
     );
-
-    await dispatch(startSaveNote(noteOriginal));
   });
 
   test("startDeleteNote should delete a note", async () => {
-    await dispatch(startNewNote());
-    state = store.getState();
+    jest.spyOn(NotesService, "delete").mockResolvedValue(Promise.resolve());
+    jest.spyOn(notesActions, "deleteNote");
 
-    expect(state.notesReducer.notes.length).toBe(1);
-    expect(state.notesReducer.notes[0].id).toBe(state.notesReducer.active?.id);
-    expect(state.notesReducer.active).toEqual({
-      body: expect.any(String),
-      date: expect.any(Number),
-      id: expect.any(String),
-      imageUrl: null,
-      title: expect.any(String),
-    });
+    // setting the note state
+    dispatch(notesActions.refreshNote(noteMock));
 
-    await dispatch(startDeleteNote(state.notesReducer.active?.id!));
-    state = store.getState();
+    await dispatch(startDeleteNote(noteMock.id));
 
+    state = mockStore.getState();
+
+    expect(NotesService.delete).toHaveBeenCalledTimes(1);
+    expect(NotesService.delete).toHaveBeenCalledWith(
+      "TESTING",
+      "jsdkllhf378das"
+    );
+    expect(notesActions.deleteNote).toHaveBeenCalledTimes(1);
+    expect(notesActions.deleteNote).toHaveBeenCalledWith("jsdkllhf378das");
     expect(state.notesReducer.active).toBe(null);
   });
 });

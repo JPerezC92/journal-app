@@ -31,9 +31,10 @@ const notesSlice = createSlice({
       state.notes = action.payload;
     },
     refreshNote: (state, { payload }: PayloadAction<Note>) => {
-      state.notes = state.notes.map((note) =>
-        note.id === payload.id ? payload : note
-      );
+      state.notes =
+        state.notes.length > 0
+          ? state.notes.map((note) => (note.id === payload.id ? payload : note))
+          : [payload];
       state.active = payload;
     },
 
