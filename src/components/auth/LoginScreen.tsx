@@ -1,43 +1,31 @@
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "../../hooks";
+import { useSelector } from "react-redux";
+import { useAuthentication, useForm } from "../../hooks";
 import { RootState } from "../../store/store";
-import { startLogin } from "../../reducers/authReducer";
-import { AuthService } from "../../services";
 
 const LoginScreen = () => {
   const { uiReducer: ui } = useSelector((state: RootState) => state);
 
-  let errorMessage = null;
-
-  const dispatch = useDispatch();
-
-  const { formValues, handleInputChange } = useForm({
+  const {
+    formValues: { email, password },
+    handleInputChange,
+  } = useForm({
     email: "",
     password: "",
   });
 
-  const { email, password } = formValues;
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    dispatch(
-      startLogin(() => AuthService.loginWithEmailAndPassword(email, password))
-    );
-  };
-
-  const handleGoogleLogin = () => {
-    dispatch(startLogin(AuthService.loginWithGoogle));
-  };
+  const { handleGoogleLogin, handleLoginWithEmailAndPassword } =
+    useAuthentication();
 
   return (
     <>
       <h3 className="auth__title">Login</h3>
 
-      {errorMessage && <div>{errorMessage}</div>}
-
       <form
-        onSubmit={handleSubmit}
+        onSubmit={(event) => {
+          event.preventDefault();
+          handleLoginWithEmailAndPassword(email, password);
+        }}
         className="animate__animated animate__fadeIn animate__faster"
       >
         <input
