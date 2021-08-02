@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 interface UseForm {
-  <FormValues>(values: FormValues): {
+  <FormValues = {}>(values: FormValues): {
     formValues: FormValues;
     handleInputChange: (
       event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
