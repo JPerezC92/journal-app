@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { startLogin } from "./authThunks";
 
 export interface User {
   isLoggedIn: boolean;
@@ -34,11 +33,6 @@ export const authSlice = createSlice({
       return state;
     },
     logout: (state) => (state = initialState),
-  },
-  extraReducers: (builder) => {
-    builder.addCase(startLogin.pending, (state, action) => {
-      state.currentRequestId = action.meta.requestId;
-    });
   },
 });
 
