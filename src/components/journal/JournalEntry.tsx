@@ -18,6 +18,7 @@ const JournalEntry = (props: { note: Note }) => {
     >
       {imageUrl && (
         <div
+          role="img"
           className="journal__entry-picture"
           style={{
             backgroundSize: "cover",
