@@ -59,9 +59,11 @@ describe("Test on <Sidebar />", () => {
 
   test("should calld handleLogout", async () => {
     const handleLogout = jest.fn();
-    jest
-      .spyOn(hooks, "useAuthentication")
-      .mockImplementation(() => ({ handleLogout }));
+    jest.spyOn(hooks, "useAuthentication").mockImplementation(() => ({
+      handleLogout,
+      handleGoogleLogin: jest.fn(),
+      handleLoginWithEmailAndPassword: jest.fn(),
+    }));
 
     const component = render(
       <Provider store={mockStore}>
