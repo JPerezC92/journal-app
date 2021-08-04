@@ -12,8 +12,7 @@ const JournalEntry = (props: { note: Note }) => {
 
   return (
     <div
-      aria-label="list"
-      // role="list"
+      role="listitem"
       className="journal__entry pointer animate__animated animate__fadeIn animate__faster"
       onClick={handleEntryClick}
     >
@@ -26,15 +25,6 @@ const JournalEntry = (props: { note: Note }) => {
           }}
         ></div>
       )}
-
-      {/* <div
-        className="journal__entry-picture"
-        style={{
-          backgroundSize: "cover",
-          backgroundImage:
-            "url(https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__480.jpg)",
-        }}
-      ></div> */}
 
       <div className="journal__entry-body">
         <p className="journal__entry-title">{title}</p>
