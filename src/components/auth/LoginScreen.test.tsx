@@ -1,29 +1,21 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import { MemoryRouter } from "react-router-dom";
-import { store } from "../../store/store";
 import { Provider } from "react-redux";
+import { store } from "../../store/store";
+import { mockStore } from "../../test-utils/mockStore";
 import LoginScreen from "./LoginScreen";
-
-store.dispatch = jest.fn();
+import * as authHook from "../../hooks/useAuthentication";
 
 describe("Test on <LoginScreen />", () => {
-  let component = render(
-    <Provider store={store}>
-      <MemoryRouter>
-        <LoginScreen />
-      </MemoryRouter>
-    </Provider>
-  );
+  const mockFunctions = {
+    handleLogout: jest.fn(),
+    handleGoogleLogin: jest.fn(),
+    handleLoginWithEmailAndPassword: jest.fn(),
+  };
 
   beforeEach(() => {
-    component = render(
-      <Provider store={store}>
-        <MemoryRouter>
-          <LoginScreen />
-        </MemoryRouter>
-      </Provider>
-    );
+    jest.resetAllMocks();
   });
 
   afterEach(() => {
@@ -44,25 +36,57 @@ describe("Test on <LoginScreen />", () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test("Sign in with google should fire a dispatch event with a function as parameter", async () => {
-    const button = component.getByTestId("google-login-button");
+  test("should call handleGoogleLogin", async () => {
+    jest
+      .spyOn(authHook, "useAuthentication")
+      .mockImplementation(() => mockFunctions);
 
-    expect(button).toHaveTextContent("Sign in with google");
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <LoginScreen />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    const button = component.getByTestId("google-login-button");
 
     fireEvent.click(button);
 
-    expect(store.dispatch).toHaveBeenCalledTimes(1);
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(Function));
+    expect(button).toHaveTextContent("Sign in with google");
+    expect(mockFunctions.handleGoogleLogin).toHaveBeenCalledTimes(1);
   });
 
-  test("Login should fire a dispatch event with a function as parameter", async () => {
+  test("should call handleLoginWithEmailAndPassword with the email and password", async () => {
+    jest
+      .spyOn(authHook, "useAuthentication")
+      .mockImplementation(() => mockFunctions);
+
+    const component = render(
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <LoginScreen />
+        </MemoryRouter>
+      </Provider>
+    );
+
     const button = component.getAllByText("Login")[1];
+    const emailField = component.getByPlaceholderText("Email");
+    const passwordField = component.getByPlaceholderText("Password");
 
     expect(button).toHaveTextContent("Login");
 
+    fireEvent.change(emailField, { target: { value: "test@testing.com" } });
+    fireEvent.change(passwordField, { target: { value: "123456" } });
+
     fireEvent.click(button);
 
-    expect(store.dispatch).toHaveBeenCalledTimes(1);
-    expect(store.dispatch).toHaveBeenCalledWith(expect.any(Function));
+    expect(mockFunctions.handleLoginWithEmailAndPassword).toHaveBeenCalledTimes(
+      1
+    );
+    expect(mockFunctions.handleLoginWithEmailAndPassword).toHaveBeenCalledWith(
+      "test@testing.com",
+      "123456"
+    );
   });
 });
