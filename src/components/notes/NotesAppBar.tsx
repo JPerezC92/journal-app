@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { useDispatch, useSelector } from "react-redux";
 import { startSaveNote, startUploadingImg } from "../../reducers";
 import { RootState } from "../../store/store";
@@ -23,7 +24,7 @@ const NotesAppBar = () => {
 
   return (
     <div className="notes__appbar">
-      <span>28 Agosto 2021</span>
+      <span>{format(active?.date!, "PP")}</span>
 
       <input
         type="file"

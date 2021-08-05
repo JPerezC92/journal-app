@@ -8,7 +8,7 @@ exports[`Test on <NotesScreen /> should match the snapshot correctly 1`] = `
     className="notes__appbar"
   >
     <span>
-      28 Agosto 2021
+      Dec 31, 1969
     </span>
     <input
       id="imageSelector"
