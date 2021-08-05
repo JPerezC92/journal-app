@@ -27,6 +27,7 @@ const NotesAppBar = () => {
       <span>{format(active?.date!, "PP")}</span>
 
       <input
+        data-testid="fileInput"
         type="file"
         name="imageSelector"
         id="imageSelector"

@@ -11,6 +11,7 @@ exports[`Test on <NotesScreen /> should match the snapshot correctly 1`] = `
       Dec 31, 1969
     </span>
     <input
+      data-testid="fileInput"
       id="imageSelector"
       name="imageSelector"
       onChange={[Function]}

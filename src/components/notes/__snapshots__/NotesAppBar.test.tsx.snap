@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test on <NotesAppBar /> should match the snapshot correctly 1`] = `
+<div
+  className="notes__appbar"
+>
+  <span>
+    Dec 31, 1969
+  </span>
+  <input
+    data-testid="fileInput"
+    id="imageSelector"
+    name="imageSelector"
+    onChange={[Function]}
+    style={
+      Object {
+        "display": "none",
+      }
+    }
+    type="file"
+  />
+  <div>
+    <button
+      className="btn"
+      onClick={[Function]}
+      type="button"
+    >
+      Picture
+    </button>
+    <button
+      className="btn"
+      onClick={[Function]}
+      type="button"
+    >
+      Save
+    </button>
+  </div>
+</div>
+`;
