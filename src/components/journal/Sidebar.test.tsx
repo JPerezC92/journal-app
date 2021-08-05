@@ -21,18 +21,15 @@ describe("Test on <Sidebar />", () => {
   });
 
   test("should match the snapshot correctly", () => {
-    let tree;
-    renderer.act(() => {
-      tree = renderer
-        .create(
-          <Provider store={store}>
-            <MemoryRouter>
-              <Sidebar />
-            </MemoryRouter>
-          </Provider>
-        )
-        .toJSON();
-    });
+    const tree = renderer
+      .create(
+        <Provider store={store}>
+          <MemoryRouter>
+            <Sidebar />
+          </MemoryRouter>
+        </Provider>
+      )
+      .toJSON();
 
     expect(tree).toMatchSnapshot();
   });

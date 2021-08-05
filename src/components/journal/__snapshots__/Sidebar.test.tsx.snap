@@ -1,3 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test on <Sidebar /> should match the snapshot correctly 1`] = `null`;
+exports[`Test on <Sidebar /> should match the snapshot correctly 1`] = `
+<aside
+  className="journal__sidebar"
+>
+  <div
+    className="journal__sidebar-navbar mt-1"
+  >
+    <h3>
+      <i
+        className="far fa-moon"
+      >
+         
+      </i>
+      <span>
+         
+      </span>
+    </h3>
+    <button
+      className="btn"
+      onClick={[Function]}
+      type="button"
+    >
+      Logout
+    </button>
+  </div>
+  <div
+    aria-label="button"
+    className="journal__new-entry"
+    onClick={[Function]}
+  >
+    <i
+      className="far fa-calendar-plus fa-5x"
+    />
+    <p
+      className="mt-5"
+    >
+      New entry
+    </p>
+  </div>
+  <div
+    className="journal__entries"
+  />
+</aside>
+`;
