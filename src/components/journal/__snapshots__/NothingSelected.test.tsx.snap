@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test on <NothingSelected /> should match the snapshot correctly 1`] = `
+<div
+  className="nothing__main-content"
+>
+  <p>
+    Select something
+    <br />
+    or create an entry
+  </p>
+  <i
+    className="far fa-star fa-4x mt-5"
+  />
+</div>
+`;
