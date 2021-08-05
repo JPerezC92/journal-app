@@ -1,0 +1,88 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test on <JournalEntries /> should match the snapshot correctly 1`] = `
+<div
+  className="journal__entries"
+>
+  <div
+    className="journal__entry pointer animate__animated animate__fadeIn animate__faster"
+    onClick={[Function]}
+    role="listitem"
+  >
+    <div
+      className="journal__entry-picture"
+      role="img"
+      style={
+        Object {
+          "backgroundImage": "url(https://res.cloudinary.com/jperezc92/image/upload/v1627759301/ezxhoydkvqaidpcf6loq.png)",
+          "backgroundSize": "cover",
+        }
+      }
+    />
+    <div
+      className="journal__entry-body"
+    >
+      <p
+        className="journal__entry-title"
+      >
+        Test title 1
+      </p>
+      <p
+        className="journal__entry-content"
+      >
+        Test body 1
+      </p>
+    </div>
+    <div
+      className="journal__entry-date-box"
+    >
+      <span>
+        Tuesday
+      </span>
+      <h4>
+        13th
+      </h4>
+    </div>
+  </div>
+  <div
+    className="journal__entry pointer animate__animated animate__fadeIn animate__faster"
+    onClick={[Function]}
+    role="listitem"
+  >
+    <div
+      className="journal__entry-picture"
+      role="img"
+      style={
+        Object {
+          "backgroundImage": "url(https://res.cloudinary.com/jperezc92/image/upload/v1627759301/ezxhoydkvqaidpcf6loq.png)",
+          "backgroundSize": "cover",
+        }
+      }
+    />
+    <div
+      className="journal__entry-body"
+    >
+      <p
+        className="journal__entry-title"
+      >
+        Test title 2
+      </p>
+      <p
+        className="journal__entry-content"
+      >
+        Test body 2
+      </p>
+    </div>
+    <div
+      className="journal__entry-date-box"
+    >
+      <span>
+        Thursday
+      </span>
+      <h4>
+        22nd
+      </h4>
+    </div>
+  </div>
+</div>
+`;

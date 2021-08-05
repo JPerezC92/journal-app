@@ -1,8 +1,8 @@
 import { fireEvent, render } from "@testing-library/react";
+import renderer from "react-test-renderer";
 import { format } from "date-fns";
 import { Provider } from "react-redux";
 import { MemoryRouter } from "react-router-dom";
-import renderer from "react-test-renderer";
 import { Note, notesActions } from "../../reducers";
 import { store } from "../../store/store";
 import { mockStore } from "../../test-utils/mockStore";
